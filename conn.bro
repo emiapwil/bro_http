@@ -1,7 +1,7 @@
 @load base/protocols/http/entities
 @load ./json.bro
 
-# const restconf_route = "http://<CONTROLLER_IP>:8181/restconf/config/fast-caltechdemo-flowmetadata:crosslayer-flow-metadata/flow-metadata";
+# const restconf_route = "http://<CONTROLLER_IP>:8181/restconf/config/fast-caltechdemo-flowmetadata:crosslayer-flow-metadata/flow-metadata/";
 const restconf_route = "http://localhost:8080/";
 
 type HTTPMetadata: record {
