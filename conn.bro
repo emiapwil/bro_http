@@ -1,8 +1,8 @@
 @load base/protocols/http/entities
 @load ./json.bro
 
-# const restconf_route = "http://<CONTROLLER_IP>:8181/restconf/config/fast-caltechdemo-flowmetadata:crosslayer-flow-metadata/flow-metadata/";
-const restconf_route = "http://localhost:8080/";
+const restconf_route = "http://localhost:8181/restconf/config/fast-caltechdemo-flowmetadata:crosslayer-flow-metadata/flow-metadata/";
+# const restconf_route = "http://localhost:8080/";
 
 type HTTPMetadata: record {
     host: string;
@@ -20,7 +20,7 @@ type FlowMetadata: record {
 
 type FlowMetadataContainer: record {
     flow_metadata: FlowMetadata;
-}
+};
 
 function post(flow_ids: string_set, http: HTTP::Info) {
     print "flow", flow_ids;
@@ -55,11 +55,13 @@ function post(flow_ids: string_set, http: HTTP::Info) {
         local json:string = JSON::convert(data);
         print json;
 
+        # escape the id at runtime using python's urllib
+	local urlencoded_id = "$(python -c \"import urllib; print urllib.quote('" + id + "')\")";
         when (local resp = ActiveHTTP::request([
-            $url=restconf_route + id,
+            $url="",
             $method="PUT",
             $client_data=json,
-            $addl_curl_args="-H \"Content-Type: application/json\" --user \"admin\":\"admin\""
+            $addl_curl_args="-H \"Content-Type: application/json\" --user \"admin\":\"admin\" " + restconf_route + urlencoded_id
         ])) {
             print "response", resp;
         }
