@@ -50,9 +50,9 @@ function post(flow_ids: string_set, http: HTTP::Info) {
 
         when (local resp = ActiveHTTP::request([
             $url=restconf_route + id,
-            $method="POST",
+            $method="PUT",
             $client_data=json,
-            $addl_curl_args="-H \"Content-Type: application/json\""
+            $addl_curl_args="-H \"Content-Type: application/json\" --user \"admin\":\"admin\""
         ])) {
             print "response", resp;
         }
