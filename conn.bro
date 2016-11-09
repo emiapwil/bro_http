@@ -18,6 +18,10 @@ type FlowMetadata: record {
     http_metadata: HTTPMetadata;
 };
 
+type FlowMetadataContainer: record {
+    flow_metadata: FlowMetadata;
+}
+
 function post(flow_ids: string_set, http: HTTP::Info) {
     print "flow", flow_ids;
     
@@ -45,7 +49,10 @@ function post(flow_ids: string_set, http: HTTP::Info) {
             $flow_id = id,
             $http_metadata = meta
         );
-        local json:string = JSON::convert(flow_meta);
+        local data = FlowMetadataContainer(
+            $flow_metadata = flow_meta
+        );
+        local json:string = JSON::convert(data);
         print json;
 
         when (local resp = ActiveHTTP::request([
