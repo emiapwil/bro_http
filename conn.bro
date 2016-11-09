@@ -13,6 +13,11 @@ type HTTPMetadata: record {
     mime_type: vector of string &optional;
 };
 
+type FlowMetadata: record {
+    flow_id: string;
+    http_metadata: HTTPMetadata;
+};
+
 function post(flow_ids: string_set, http: HTTP::Info) {
     print "flow", flow_ids;
     
@@ -35,10 +40,14 @@ function post(flow_ids: string_set, http: HTTP::Info) {
         meta$mime_type = http$resp_mime_types;
     }
 
-    local json:string = JSON::convert(meta);
-    print json;
-
     for (id in flow_ids) {
+        local flow_meta = FlowMetadata(
+            $flow_id = id,
+            $http_metadata = meta
+        );
+        local json:string = JSON::convert(flow_meta);
+        print json;
+
         when (local resp = ActiveHTTP::request([
             $url=restconf_route + id,
             $method="POST",

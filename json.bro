@@ -39,9 +39,9 @@ function convert(v: any, only_loggable: bool &default=F): string
         fallthrough;
         case "count":
         fallthrough;
-        case "time":
-        fallthrough;
         case "double":
+        return cat("", v, "");
+        case "time":
         fallthrough;
         case "enum":
         return cat("\"", v, "\"");
@@ -60,7 +60,8 @@ function convert(v: any, only_loggable: bool &default=F): string
             local field_desc = ft[field];
             if ( field_desc?$value && (!only_loggable || field_desc$log) )
                 {
-                local onepart = cat("\"", field, "\": ", JSON::convert(field_desc$value, only_loggable));
+                local field_name = gsub(field, /"_"/, "-");
+                local onepart = cat("\"", field_name, "\": ", JSON::convert(field_desc$value, only_loggable));
                 rec_parts[|rec_parts|] = onepart;
                 }
             }
