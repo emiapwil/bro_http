@@ -1,7 +1,7 @@
 @load base/protocols/http/entities
 @load ./json.bro
 
-# const restconf_route = "http://<CONTROLLER_IP>:8181/restconf/config/fast-caltechdemo-flowmetadata:crosslayer-flow-metadata/flow-metadata";
+# const restconf_route = "http://<CONTROLLER_IP>:8181/restconf/config/fast-caltechdemo-flowmetadata:crosslayer-flow-metadata/flow-metadata/";
 const restconf_route = "http://localhost:8080/";
 
 type HTTPMetadata: record {
@@ -57,9 +57,9 @@ function post(flow_ids: string_set, http: HTTP::Info) {
 
         when (local resp = ActiveHTTP::request([
             $url=restconf_route + id,
-            $method="POST",
+            $method="PUT",
             $client_data=json,
-            $addl_curl_args="-H \"Content-Type: application/json\""
+            $addl_curl_args="-H \"Content-Type: application/json\" --user \"admin\":\"admin\""
         ])) {
             print "response", resp;
         }
