@@ -1,7 +1,7 @@
 @load base/protocols/http/entities
 @load ./json.bro
 
-const restconf_route = "http://localhost:8181/restconf/config/fast-caltechdemo-flowmetadata:crosslayer-flow-metadata/flow-metadata/";
+const restconf_route = "http://$CONTROLLER_IP:8181/restconf/config/fast-caltechdemo-flowmetadata:crosslayer-flow-metadata/flow-metadata/";
 # const restconf_route = "http://localhost:8080/";
 
 type HTTPMetadata: record {
@@ -24,7 +24,7 @@ type FlowMetadataContainer: record {
 
 function post(flow_ids: string_set, http: HTTP::Info) {
     print "flow", flow_ids;
-    
+
     local meta = HTTPMetadata(
         $host = http$host,
         $uri = http$uri
@@ -91,7 +91,7 @@ function flow_hash(f: fa_file) : string_set {
 }
 
 event file_sniff(f: fa_file, meta: fa_metadata) {
-    
+
     # ignore non-HTTP packets
     if (f$source != "HTTP") {
         print "ignore", f$source;

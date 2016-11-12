@@ -1,11 +1,11 @@
 #!/bin/bash
 
-if [ -z "$1" ]; then
-	echo "Usage: $0 INTERFACE"
-	exit
-fi
+INTERFACE=${1:?"Usage: $0 INTERFACE CONTROLLER_IP"}
+CONTROLLER_IP=${2:?"Usage: $0 INTERFACE CONTROLLER_IP"}
 
-DISTO_VERSION="$(cat /proc/version)"
+BRO_DIR=$(dirname $(which $0))
+
+DISTRO_VERSION="$(cat /proc/version)"
 
 BRO="$(which bro)"
 
@@ -17,9 +17,12 @@ if [ -z "$BRO" ]; then
 	fi
 fi
 
-if [ -z "$BRO" ]; then
-	echo "Must install bro first!"
-	exit
-fi
+BRO=${BRO:?"Must install bro first!"}
 
-$BRO -C -i $1 conn.bro
+pushd $BRO_DIR
+
+cat conn.bro | sed "s/\$CONTROLLER_IP/$CONTROLLER_IP/g" > http.bro
+
+$BRO -C -i $INTERFACE http.bro &>bro_http.log
+
+popd
