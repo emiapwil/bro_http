@@ -99,6 +99,8 @@ def monitor_file(filename, consumer):
     while True:
         line = f.readline().rstrip('\r\n')
         if len(line) > 0:
+            if line.startswith('#'):
+                continue
             consumer(line)
 
 if __name__ == '__main__':
