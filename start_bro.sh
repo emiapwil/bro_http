@@ -21,8 +21,8 @@ BRO=${BRO:?"Must install bro first!"}
 
 pushd $BRO_DIR
 
-cat conn.bro | sed "s/\$CONTROLLER_IP/$CONTROLLER_IP/g" > http.bro
+cat new_conn.bro | sed "s/\$CONTROLLER_IP/$CONTROLLER_IP/g" > http.bro
 
-$BRO -C -i $INTERFACE http.bro &>bro_http.log
+$BRO -C -i $INTERFACE http.bro
 
 popd
